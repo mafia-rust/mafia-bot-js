@@ -9,8 +9,8 @@ export default function OutlineListElement(props: { roleList: RoleList } ): Reac
         <h2>{translate("menu.lobby.roleList")}</h2>
         <div className="role-list-setter-list">
             {props.roleList.map((outline, index) => {
-                return <div>
-                    <div key={index} className="role-list-setter-outline-div">
+                return <div key={index} >
+                    <div className="role-list-setter-outline-div">
                         <RoleOutlineElement
                             roleOutline={outline}
                             key={index}

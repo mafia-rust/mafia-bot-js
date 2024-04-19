@@ -16,10 +16,8 @@ export default function Deck(props: {
         </header>
         <main>
             <div>
-                <OutlineList roleList={props.gameMode.roleList}/>
-            </div>
-            <div>
                 <PhaseTimesElement phaseTimes={props.gameMode.phaseTimes}/>
+                <OutlineList roleList={props.gameMode.roleList}/>
                 <DisabledRolesElement disabledRoles={props.gameMode.disabledRoles}/>
             </div>
         </main>

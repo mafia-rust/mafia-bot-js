@@ -1,0 +1,31 @@
+
+.deck {
+    background-color: var(--background-color);
+    border: .13rem solid var(--primary-border-color);
+    border-bottom-color: black;
+    border-right-color: black;
+    border-radius: 2rem;
+    padding: 1rem;
+    margin: 1rem 1rem;
+    gap: 0.5rem;
+}
+
+.deck > header {
+    padding: 0 0.5rem;
+    padding-bottom: 0.5rem;
+}
+
+.deck main {
+    flex-direction: column;
+}
+
+.deck .phase-times div {
+    height: 2rem;
+}
+
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    border-color: var(--primary-border-color)
+}

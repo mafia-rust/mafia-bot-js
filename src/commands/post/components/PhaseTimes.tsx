@@ -22,11 +22,6 @@ function PhaseTimeElement(props: {
     
     return <div>
         <span>{translate(phaseKey)}</span>
-        <input
-            name={phaseKey}
-            type="text"
-            value={props.time}
-            onChange={() => {}}
-        />
+        <span>{props.time}</span>
     </div>
 }
