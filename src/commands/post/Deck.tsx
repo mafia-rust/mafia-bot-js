@@ -14,12 +14,32 @@ export default function Deck(props: {
             <h1>{props.gameMode.name}</h1>
             <h3>{props.creator}</h3>
         </header>
-        <main>
-            <div>
-                <PhaseTimesElement phaseTimes={props.gameMode.phaseTimes}/>
-                <OutlineList roleList={props.gameMode.roleList}/>
-                <DisabledRolesElement disabledRoles={props.gameMode.disabledRoles}/>
-            </div>
-        </main>
+        {props.gameMode.roleList.length < 18
+            ? <main>
+                <div className="top">
+                    <PhaseTimesElement phaseTimes={props.gameMode.phaseTimes}/>
+                </div>
+                <div className="bottom">
+                    <div>
+                        <OutlineList roleList={props.gameMode.roleList}/>
+                    </div>
+                    <div>
+                        <DisabledRolesElement disabledRoles={props.gameMode.disabledRoles}/>
+                    </div>
+                </div>
+            </main>
+            : <main>
+                <div className="bottom">
+                    <div>
+                        <OutlineList roleList={props.gameMode.roleList}/>
+                    </div>
+                    <div>
+                        <DisabledRolesElement disabledRoles={props.gameMode.disabledRoles}/>
+                        <PhaseTimesElement phaseTimes={props.gameMode.phaseTimes}/>
+                    </div>
+                </div>
+            </main>
+        }
+        
     </div>
 }

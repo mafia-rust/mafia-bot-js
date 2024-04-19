@@ -1,9 +1,8 @@
-import { CommandInteraction, SlashCommandBuilder } from "discord.js";
+import { ActionRowBuilder, ButtonBuilder, ButtonStyle, CommandInteraction, MessageActionRowComponentBuilder, SlashCommandBuilder } from "discord.js";
 import { Command } from "..";
 import nodeHtmlToImage from "node-html-to-image";
 import fs from "fs/promises"
-import React, { createElement } from "react"
-import ReactDOM from "react-dom"
+import React from "react"
 import { renderToString } from "react-dom/server";
 import Deck from "./Deck";
 import { CONFIG } from "../../config";
@@ -22,27 +21,55 @@ const data = new SlashCommandBuilder()
 async function invoke(interaction: CommandInteraction): Promise<void> {
     if (!interaction.isChatInputCommand()) return;
 
-    await interaction.deferReply();
+    const gameModeResult = parseGameMode(interaction.options.getString('deck', true));
 
-    const gameMode = parseGameMode(interaction.options.getString('deck', true));
-
-    if (isFailure(gameMode)) {
-        await interaction.editReply({ content: `Failed to parse game mode. ${translateParseFailure(gameMode)}` });
+    if (isFailure(gameModeResult)) {
+        await interaction.reply({ content: `Failed to parse game mode. ${translateParseFailure(gameModeResult)}`, ephemeral: true });
         return;
     }
+    const gameMode = gameModeResult.value;
 
-    const html = await renderDeckToHTMLString({ creator: interaction.user.displayName, gameMode: gameMode.value })
-    const output = `${CONFIG.IMAGES_DIR}/${interaction.id}.png`;
+    await interaction.deferReply();
 
-    await nodeHtmlToImage({ output, html, transparent: true });
+    const html = await renderDeckToHTMLString({ creator: interaction.user.displayName, gameMode: gameMode })
 
-    console.log('The image was created successfully!')
+    const imgOutput = `${CONFIG.IMAGES_DIR}/${interaction.id}.png`;
+    const jsonOutput = `${CONFIG.JSON_DIR}/${interaction.id}.json`;
+
+    await nodeHtmlToImage({ output: imgOutput, html, transparent: true });
+    await fs.writeFile(jsonOutput, JSON.stringify(gameMode, null, 4));
+    
+    const deleteButton = new ButtonBuilder()
+        .setCustomId('delete')
+        .setStyle(ButtonStyle.Danger)
+        .setLabel('Delete');
+    
+    const actions = new ActionRowBuilder<MessageActionRowComponentBuilder>()
+        .addComponents(deleteButton)
         
-    await interaction.editReply({ files: [{ attachment: output }] });
+    const response = await interaction.editReply({ 
+        content: `# ${gameMode.name}\n### By ${interaction.user.displayName}`, 
+        files: [{ attachment: imgOutput }, { attachment: jsonOutput } ],
+        components: [actions]
+    });
 
     setTimeout(() => {
-        fs.rm(output);
+        fs.rm(imgOutput);
+        fs.rm(jsonOutput)
     }, 10000);
+
+    try {
+        const confirmation = await response.awaitMessageComponent({ 
+            filter: i => i.user.id === interaction.user.id, 
+            time: 60_000
+        });
+        
+        if (confirmation.customId === 'delete') {
+            await interaction.deleteReply();
+        }
+    } catch (e) {
+        await interaction.editReply({ components: [] });
+    }
 }
 
 function translateParseFailure(failure: ParseFailure): string {

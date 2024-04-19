@@ -22,5 +22,6 @@ function getEnvironmentVariables<K extends string[]>(...vars: K): Record<K[numbe
 export const CONFIG = getEnvironmentVariables(
     "DISCORD_TOKEN",
     "DISCORD_CLIENT_ID",
-    "IMAGES_DIR"
+    "IMAGES_DIR",
+    "JSON_DIR"
 );

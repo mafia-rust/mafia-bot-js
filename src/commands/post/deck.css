@@ -12,11 +12,27 @@
 
 .deck > header {
     padding: 0 0.5rem;
-    padding-bottom: 0.5rem;
 }
 
-.deck main {
+
+.deck > main {
     flex-direction: column;
+    gap: 0.5rem;
+}
+
+.deck > main > .bottom {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.deck > main > .bottom > div {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-basis: 40%;
+    flex-grow: 1;
 }
 
 .deck .phase-times div {
