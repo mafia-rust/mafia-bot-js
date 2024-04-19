@@ -36,7 +36,12 @@ async function invoke(interaction: CommandInteraction): Promise<void> {
     const imgOutput = `${CONFIG.IMAGES_DIR}/${interaction.id}.png`;
     const jsonOutput = `${CONFIG.JSON_DIR}/${interaction.id}.json`;
 
-    await nodeHtmlToImage({ output: imgOutput, html, transparent: true });
+    await nodeHtmlToImage({ 
+        output: imgOutput, 
+        html, 
+        transparent: true,
+        puppeteerArgs: { args: ['--no-sandbox'] }
+    });
     await fs.writeFile(jsonOutput, JSON.stringify(gameMode, null, 4));
     
     const deleteButton = new ButtonBuilder()
