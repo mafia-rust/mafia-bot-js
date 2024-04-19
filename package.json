@@ -13,18 +13,24 @@
     "url": "git+https://github.com/Jack-Papel/mafia-bot-js.git"
   },
   "author": "Jack Papel",
-  "license": "ISC",
+  "license": "MPL-2.0",
   "bugs": {
     "url": "https://github.com/Jack-Papel/mafia-bot-js/issues"
   },
   "homepage": "https://github.com/Jack-Papel/mafia-bot-js#readme",
   "dependencies": {
     "0g": "^0.0.9",
+    "mafia": "file:../mafia/client",
     "discord.js": "^14.14.1",
     "dotenv": "^16.4.5",
-    "npm": "^10.5.2"
+    "node-html-to-image": "^4.0.0",
+    "npm": "^10.5.2",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0"
   },
   "devDependencies": {
+    "@types/react": "^18.2.79",
+    "@types/react-dom": "^18.2.25",
     "tsup": "^8.0.2",
     "tsx": "^4.7.2",
     "typescript": "^5.4.5"

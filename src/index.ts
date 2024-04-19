@@ -1,28 +1,26 @@
 import { Client } from "discord.js";
 import { deployCommands } from "./deploy-commands"
-import { commands } from "./commands"
-import { config } from "./config";
+import { COMMANDS } from "./commands"
+import { CONFIG } from "./config";
 
-const client = new Client({
+const CLIENT = new Client({
     intents: ["Guilds", "GuildMessages", "DirectMessages"],
 });
 
-client.once("ready", () => {
-    console.log("Discord bot is ready! 🤖");
+CLIENT.once("ready", () => {
+    console.log("Ready.");
+    for (const guild of CLIENT.guilds.cache) {
+        deployCommands({ guildId: guild[1].id });
+    }
 });
 
-client.on("guildCreate", async (guild) => {
+CLIENT.on("guildCreate", async (guild) => {
     await deployCommands({ guildId: guild.id });
 });
 
-client.on("interactionCreate", async (interaction) => {
-    if (!interaction.isCommand()) {
-        return;
-    }
-    const { commandName } = interaction;
-    if (commands[commandName as keyof typeof commands]) {
-        commands[commandName as keyof typeof commands].execute(interaction);
-    }
+CLIENT.on("interactionCreate", async (interaction) => {
+    if (!interaction.isCommand()) return;
+    COMMANDS.find(command => command.data.name === interaction.commandName)?.invoke(interaction)
 });
 
-client.login(config.DISCORD_TOKEN);
+CLIENT.login(CONFIG.DISCORD_TOKEN);
