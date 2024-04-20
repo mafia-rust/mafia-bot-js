@@ -66,7 +66,7 @@ async function invoke(interaction: CommandInteraction): Promise<void> {
     try {
         const confirmation = await response.awaitMessageComponent({ 
             filter: i => i.user.id === interaction.user.id, 
-            time: 60_000
+            time: 5 * 60_000
         });
         
         if (confirmation.customId === 'delete') {
@@ -119,6 +119,10 @@ function translateParseFailure(failure: ParseFailure): string {
             return `This faction should be a string, instead it was: '\`${failure.snippet}\`'`
         case "invalidFaction":
             return `This is an invalid faction: '\`${failure.snippet}\`'`
+        case "roleListIsEmpty":
+            return `This role list is empty: '\`${failure.snippet}\`'`
+        case "nameContainsNewline":
+            return `This name contains a newline, which is not allowed: '\`${failure.snippet}\`'`
         default:
             if (failure.reason.endsWith("KeyMissingFromPhaseTimes")) {
                 const key = failure.reason.substring(0, failure.reason.indexOf("KeyMissingFromPhaseTimes"))

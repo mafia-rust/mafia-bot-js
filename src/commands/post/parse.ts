@@ -11,9 +11,9 @@ export type ParseFailure = {
     type: "failure",
     reason: "gameModeNotObject" | "invalidJSON" | `${keyof GameMode}KeyMissingFromGameMode` | "nameIsNotString" | "roleListIsNotArray" | "roleOutlineMissingTypeKey" | 
         "roleOutlineMissingOptionsKey" | "roleOutlineInvalidType" | "roleOutlineOptionListIsNotArray" | "roleOutlineOptionMissingTypeKey" | 
-        "roleOutlineOptionMissingRoleKey" | "roleOutlineOptionMissingRoleSetKey" | "roleOutlineOptionMissingFactionKey" | 
+        "roleOutlineOptionMissingRoleKey" | "roleOutlineOptionMissingRoleSetKey" | "roleOutlineOptionMissingFactionKey" | "nameContainsNewline" |
         "roleOutlineOptionInvalidType" | `${PhaseType}KeyMissingFromPhaseTimes` | `${PhaseType}ValueOfPhaseTimesIsNotNumber` | "disabledRolesIsNotArray" | 
-        "roleIsNotString" | "invalidRole" | "roleSetIsNotString" | "invalidRoleSet" | "factionIsNotString" | "invalidFaction",
+        "roleIsNotString" | "invalidRole" | "roleSetIsNotString" | "invalidRoleSet" | "factionIsNotString" | "invalidFaction" | "roleListIsEmpty",
     snippet: string
 }
 type ParseResult<T> = ParseSuccess<T> | ParseFailure;
@@ -80,6 +80,9 @@ function parseName(json: NonNullable<any>): ParseResult<string> {
     if (typeof json !== "string") {
         return Failure("nameIsNotString", json)
     } else {
+        if (json.includes('\n') || json.includes('\r')) {
+            return Failure("nameContainsNewline", json)
+        }
         return Success(json);
     }
 }
@@ -87,6 +90,10 @@ function parseName(json: NonNullable<any>): ParseResult<string> {
 function parseRoleList(json: NonNullable<any>): ParseResult<RoleList> {
     if (!Array.isArray(json)) {
         return Failure("roleListIsNotArray", json);
+    }
+
+    if (json.length === 0) {
+        return Failure("roleListIsEmpty", json);
     }
 
     const roleList = json.map(parseRoleOutline);
